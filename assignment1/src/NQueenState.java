@@ -10,7 +10,7 @@ public class NQueenState {
         this.boardState = new ArrayList<>();
     }
 
-    // Deep copy
+    // Deep copy constructor.
     public NQueenState(NQueenState another) {
         this.boardState = new ArrayList<>(another.boardState);
     }
