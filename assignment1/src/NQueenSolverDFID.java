@@ -1,10 +1,10 @@
-public class NQueenSolverDFID implements NQueenSolver {
+public class NQueenSolverDFID implements NQueenSolverInterface {
 
     public String getAlgorithmName() {
         return "DFID";
     }
 
-    public int[] solve(int N) {
-        return new int[0];
+    public NQueenState solve(int N) {
+        return new NQueenState();
     }
 }
