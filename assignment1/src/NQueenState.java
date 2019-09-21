@@ -1,9 +1,9 @@
 import java.util.ArrayList;
 
 /**
- * Represents a state of N-Queen problem.
+ * Represents a board state of N-Queens problem.
  */
-public class NQueenState {
+class NQueenState {
     public ArrayList<Integer> boardState;
 
     // Default constructor.
@@ -19,7 +19,7 @@ public class NQueenState {
     /**
      * Check if the state satisfies the rules of N-Queens problem.
      * @param N Number of N.
-     * @return If the state is okay, return true.
+     * @return If the state is okay, return true. Otherwise, return false.
      */
     public boolean isValidState(int N) {
         // Is the number of elements right?
@@ -39,7 +39,11 @@ public class NQueenState {
         return true;
     }
 
-
+    /**
+     * Get all possible next state of board.
+     * @param boardSize Size of the board.
+     * @return Array of `NQueenState` objects.
+     */
     public NQueenState[] getNextStates(int boardSize) {
         NQueenState[] nextStates = new NQueenState[boardSize];
         for (int i = 0; i < boardSize; i++) {

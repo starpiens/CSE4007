@@ -1,4 +1,4 @@
-public class NQueenSolverDFID extends NQueenSolverDFS {
+class NQueenSolverDFID extends NQueenSolverDFS {
 
     public String getAlgorithmName() {
         return "DFID";

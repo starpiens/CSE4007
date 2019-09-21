@@ -1,6 +1,6 @@
 import java.util.Stack;
 
-public class NQueenSolverDFS implements NQueenSolverInterface {
+class NQueenSolverDFS implements NQueenSolverInterface {
 
     public String getAlgorithmName() {
         return "DFS";
@@ -10,7 +10,7 @@ public class NQueenSolverDFS implements NQueenSolverInterface {
         return runDFS(N, N);
     }
 
-    protected NQueenState runDFS(int N, int depth) {
+    NQueenState runDFS(int N, int depth) {
         Stack<NQueenState> states = new Stack<>();
         states.push(new NQueenState());
 

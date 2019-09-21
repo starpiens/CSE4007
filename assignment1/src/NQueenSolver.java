@@ -39,9 +39,8 @@ public class NQueenSolver {
     }
 
     /**
-     * Main function. Found a solution of N-Queens problem and write result on file.
-     * @param args args[0]: Absolute path of output file.
-     *             args[1]: Positive integer N.
+     * Main function. Find a solution of N-Queens problem and write result on file.
+     * @param args args[0] is absolute path of output file, and args[1] is parameter N of N-queens problem.
      */
     public static void main(String[] args) {
         // Parse command line arguments

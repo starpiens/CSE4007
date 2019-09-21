@@ -1,6 +1,6 @@
 import java.util.LinkedList;
 
-public class NQueenSolverBFS implements NQueenSolverInterface {
+class NQueenSolverBFS implements NQueenSolverInterface {
 
     public String getAlgorithmName() {
         return "BFS";
