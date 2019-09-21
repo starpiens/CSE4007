@@ -11,8 +11,8 @@ public class NQueenSolver {
 
     /**
      * Run NQueenSolverInterface objects and write results on `outfile`.
-     * @param solvers      Array of NQueenSolverInterface objects.
-     * @param N            Size of the chess board.
+     * @param solvers Array of NQueenSolverInterface objects.
+     * @param N Size of the chess board.
      * @throws IOException On output error.
      */
     private static void runNQueenSolvers(NQueenSolverInterface[] solvers, int N) throws IOException {
@@ -39,7 +39,7 @@ public class NQueenSolver {
     }
 
     /**
-     * Main function. Found a solution which is
+     * Main function. Found a solution of N-Queens problem and write result on file.
      * @param args args[0]: Absolute path of output file.
      *             args[1]: Positive integer N.
      */
