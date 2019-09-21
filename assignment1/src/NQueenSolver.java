@@ -6,23 +6,25 @@ import java.io.IOException;
  */
 public class NQueenSolver {
 
-    // FileWriter object for write results.
+    // FileWriter object for writing results.
     private static FileWriter outfile;
 
     /**
      * Run NQueenSolverInterface objects and write results on `outfile`.
      * @param solvers      Array of NQueenSolverInterface objects.
-     * @param boardSize    Size of the chess board.
+     * @param N            Size of the chess board.
      * @throws IOException On output error.
      */
-    private static void runNQueenSolvers(NQueenSolverInterface[] solvers, int boardSize) throws IOException {
+    private static void runNQueenSolvers(NQueenSolverInterface[] solvers, int N) throws IOException {
         for (NQueenSolverInterface solver : solvers) {
+            // Run solver and measure elapsed time.
             outfile.write("> " + solver.getAlgorithmName() + "\n");
             long start_time = System.currentTimeMillis();
-            NQueenState result = solver.solve(boardSize);
+            NQueenState result = solver.solve(N);
             long end_time = System.currentTimeMillis();
 
-            if (result.boardState.size() != 0) {
+            // Write result.
+            if (result != null) {
                 outfile.write("Location:");
                 for (int i : result.boardState)
                     outfile.write(" " + i);
@@ -31,13 +33,15 @@ public class NQueenSolver {
                 outfile.write("No solution\n");
             }
 
+            // Write elapsed time.
             outfile.write("Elapsed time: " + ((double)(end_time - start_time) / 1e3) + "s\n\n");
         }
     }
 
     /**
-     *
-     * @param args
+     * Main function. Found a solution which is
+     * @param args args[0]: Absolute path of output file.
+     *             args[1]: Positive integer N.
      */
     public static void main(String[] args) {
         // Parse command line arguments

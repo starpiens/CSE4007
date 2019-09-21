@@ -7,6 +7,10 @@ public class NQueenSolverDFS implements NQueenSolverInterface {
     }
 
     public NQueenState solve(int N) {
+        return runDFS(N, N);
+    }
+
+    protected NQueenState runDFS(int N, int depth) {
         Stack<NQueenState> states = new Stack<>();
         states.push(new NQueenState());
 
@@ -15,7 +19,7 @@ public class NQueenSolverDFS implements NQueenSolverInterface {
             if (currentState.isValidState(N)) {
                 // If solution is found, return.
                 return currentState;
-            } else if (currentState.boardState.size() < N) {
+            } else if (currentState.boardState.size() < depth) {
                 // Expand.
                 for (int i = 0; i < N; i++) {
                     NQueenState nextState = new NQueenState(currentState);
@@ -26,6 +30,6 @@ public class NQueenSolverDFS implements NQueenSolverInterface {
         }
 
         // Solution not found.
-        return new NQueenState();
+        return null;
     }
 }

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 public class NQueenState {
     public ArrayList<Integer> boardState;
 
+    // Default constructor.
     public NQueenState() {
         this.boardState = new ArrayList<>();
     }
@@ -16,18 +17,18 @@ public class NQueenState {
     }
 
     /**
-     * Check if the state satisfies the rules of N-Queen problem.
-     * @param boardSize The size of chess board.
-     * @return          If the state is okay, return true.
+     * Check if the state satisfies the rules of N-Queens problem.
+     * @param N Number of N.
+     * @return If the state is okay, return true.
      */
-    public boolean isValidState(int boardSize) {
+    public boolean isValidState(int N) {
         // Is the number of elements right?
-        if (boardState.size() != boardSize)
+        if (boardState.size() != N)
             return false;
 
         // Check all pairs of elements.
-        for (int i = 0; i < boardSize; i++) {
-            for (int j = i + 1; j < boardSize; j++) {
+        for (int i = 0; i < N; i++) {
+            for (int j = i + 1; j < N; j++) {
                 int delta = Math.abs(boardState.get(j) - boardState.get(i));
                 // Check horizontal and diagonal.
                 if (delta == 0 || delta == j - i)
@@ -36,5 +37,15 @@ public class NQueenState {
         }
 
         return true;
+    }
+
+
+    public NQueenState[] getNextStates(int boardSize) {
+        NQueenState[] nextStates = new NQueenState[boardSize];
+        for (int i = 0; i < boardSize; i++) {
+            nextStates[i] = new NQueenState(this);
+            nextStates[i].boardState.add(i);
+        }
+        return nextStates;
     }
 }
