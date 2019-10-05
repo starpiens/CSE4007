@@ -15,9 +15,9 @@ public class Assignment2 {
         if (args.length < 2) {
             System.exit(1);
         }
-        int N = Integer.parseInt(args[1]);
+        int N = Integer.parseInt(args[0]);
         try {
-            outfile = new FileWriter(args[0] + "/result" + args[1] + ".txt");
+            outfile = new FileWriter(args[1] + "/result" + args[0] + ".txt");
             NQueenSolver solver = new NQueenSolver();
             outfile.write("> Hill Climbing\n");
 

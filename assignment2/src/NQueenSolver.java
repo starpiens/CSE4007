@@ -1,12 +1,13 @@
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * Solves N-Queens problem using hill climbing algorithm.
  */
-public class NQueenSolver {
+class NQueenSolver {
 
     // Maximum number of iterations.
-    final int MAX_ITERS = 1000;
+    private final int MAX_ITERS = 1000;
     // Size of the board.
     private int boardSize;
 
@@ -18,30 +19,30 @@ public class NQueenSolver {
     @Nullable
     public NQueenState run(int boardSize) {
         this.boardSize = boardSize;
-        NQueenState currentState;
 
         // While find global minimum:
         for (int i = 0; i < MAX_ITERS; i++) {
             // Generate a new random state.
-            currentState = new NQueenState(boardSize);
+            NQueenState state = new NQueenState(boardSize);
+            float currentLoss = getLoss(state);
             // If global minimum is found, return it.
-            if (getLoss(currentState) == 0.0) {
-                return currentState;
+            if (currentLoss == 0.0) {
+                return state;
             }
 
+            NQueenState prevState;
+            float prevLoss;
             // While find local minimum:
-            while (true) {
-                NQueenState bestState = getBestNextState(currentState);
-                if (getLoss(currentState) > getLoss(bestState)) {
-                    currentState = bestState;
-                } else {
-                    break;
-                }
-            }
+            do {
+                prevState = state;
+                prevLoss = currentLoss;
+                state = getBestNextState(state);
+                currentLoss = getLoss(state);
+            } while (prevLoss > currentLoss);
 
             // If global minimum is found, return it.
-            if (getLoss(currentState) == 0.0) {
-                return currentState;
+            if (prevLoss == 0.0) {
+                return prevState;
             }
         }
 
@@ -52,17 +53,35 @@ public class NQueenSolver {
 
     /**
      * Get best next state of given board.
-     * @param state Current state.
+     * @param currentState Current state.
      * @return Next state that maximizes the value of `getLoss`.
      */
-    // TODO
-    @Nullable
-    private NQueenState getBestNextState(NQueenState state) {
-        return null;
+    @NotNull
+    private NQueenState getBestNextState(NQueenState currentState) {
+        assert(currentState.boardState.size() == boardSize);
+
+        NQueenState bestState = new NQueenState();
+        float bestLoss = Float.MAX_VALUE;
+        for (int i = 0; i < boardSize; i++) {
+            for (int j = -1; j <= 1; j += 2) {
+                int nextRow = currentState.boardState.get(i) + j;
+                // If it is valid state:
+                if (0 <= nextRow && nextRow < boardSize) {
+                    NQueenState nextState = new NQueenState(currentState);
+                    nextState.boardState.set(i, nextRow);
+                    float nextLoss = getLoss(nextState);
+                    if (bestLoss > nextLoss) {
+                        bestLoss = nextLoss;
+                        bestState = nextState;
+                    }
+                }
+            }
+        }
+        return bestState;
     }
 
     // TODO
-    float getLoss(NQueenState state) {
+    private float getLoss(NQueenState state) {
         return (float)3.0;
     }
 }
