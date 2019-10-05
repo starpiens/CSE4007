@@ -6,8 +6,6 @@ import org.jetbrains.annotations.Nullable;
  */
 class NQueenSolver {
 
-    // Maximum number of iterations.
-    private final int MAX_ITERS = 1000;
     // Size of the board.
     private int boardSize;
 
@@ -21,7 +19,7 @@ class NQueenSolver {
         this.boardSize = boardSize;
 
         // While find global minimum:
-        for (int i = 0; i < MAX_ITERS; i++) {
+        while (true) {
             // Generate a new random state.
             NQueenState state = new NQueenState(boardSize);
             float currentLoss = getLoss(state);
@@ -45,16 +43,13 @@ class NQueenSolver {
                 return prevState;
             }
         }
-
-        // Maximum number of iterations exceeded.
-        return null;
     }
 
 
     /**
      * Get best next state of given board.
      * @param currentState Current state.
-     * @return Next state that maximizes the value of `getLoss`.
+     * @return Next state that minimizes the value of `getLoss`.
      */
     @NotNull
     private NQueenState getBestNextState(NQueenState currentState) {
