@@ -19,12 +19,14 @@ class NQueenSolver {
         this.boardSize = boardSize;
 
         // While find global minimum:
+        int num_restart = 0;
         while (true) {
             // Generate a new random state.
             NQueenState state = new NQueenState(boardSize);
             float currentLoss = getLoss(state);
             // If global minimum is found, return it.
             if (currentLoss == 0.0) {
+                System.out.println("Number of restarts: " + num_restart);
                 return state;
             }
 
@@ -40,8 +42,10 @@ class NQueenSolver {
 
             // If global minimum is found, return it.
             if (prevLoss == 0.0) {
+                System.out.println("Number of restarts: " + num_restart);
                 return prevState;
             }
+            num_restart++;
         }
     }
 
