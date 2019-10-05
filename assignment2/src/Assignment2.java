@@ -18,9 +18,25 @@ public class Assignment2 {
         int N = Integer.parseInt(args[1]);
         try {
             outfile = new FileWriter(args[0] + "/result" + args[1] + ".txt");
+            NQueenSolver solver = new NQueenSolver();
+            outfile.write("> Hill Climbing\n");
 
-            runHillClimber();
+            // Run solver and measure elapsed time.
+            long start_time = System.currentTimeMillis();
+            NQueenState result = solver.run(N);
+            long end_time = System.currentTimeMillis();
 
+            // Write result.
+            if (result != null) {
+                outfile.write("Location:");
+                for (int i : result.boardState)
+                    outfile.write(" " + i);
+                outfile.write("\n");
+            } else {
+                outfile.write("No solution\n");
+            }
+            // Write elapsed time.
+            outfile.write("Elapsed time: " + ((double)(end_time - start_time) / 1e3) + "s\n\n");
             outfile.close();
 
         } catch(IOException e) {
