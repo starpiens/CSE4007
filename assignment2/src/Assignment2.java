@@ -8,7 +8,7 @@ public class Assignment2 {
 
     /**
      * Main function. Find a solution of N-Queens problem and write result on file.
-     * @param args args[0] is absolute path of output file, and args[1] is parameter N of N-queens problem.
+     * @param args `args[0]` is parameter N of N-queens problem, and `args[1]` is absolute path of output file.
      */
     public static void main(String[] args) {
         // Parse command line arguments

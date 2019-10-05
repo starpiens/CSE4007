@@ -17,7 +17,7 @@ class NQueenSolver {
      * @return If solution is found, return a NQueenState object describes the state of board. Otherwise, return null.
      */
     @Nullable
-    public NQueenState run(int boardSize) {
+    NQueenState run(int boardSize) {
         this.boardSize = boardSize;
 
         // While find global minimum:
@@ -80,8 +80,24 @@ class NQueenSolver {
         return bestState;
     }
 
-    // TODO
+    /**
+     * Get loss of the state.
+     * This version of implementation uses naive implementation,
+     * which is counting the number of violations of N-queens rule.
+     * @param state The board state.
+     * @return Loss of `state`.
+     */
     private float getLoss(NQueenState state) {
-        return (float)3.0;
+        float loss = 0;
+        // Check all pairs of elements.
+        for (int i = 0; i < boardSize - 1; i++) {
+            for (int j = i + 1; j < boardSize; j++) {
+                int delta = Math.abs(state.boardState.get(j) - state.boardState.get(i));
+                // Check horizontal and diagonal.
+                if (delta == 0 || delta == j - i)
+                    loss++;
+            }
+        }
+        return loss;
     }
 }
