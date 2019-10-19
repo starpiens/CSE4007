@@ -58,7 +58,7 @@ public class GeneticSolver implements NQueensSolver {
     private int maxGenerations = (int)1e9;
     private int population = 500;           // [1,
     private int mutationStrength = 1;       // [1,
-    private double crossoverRate = 0.3;
+    private double crossoverRate = .1;
     // private double selectionRate = 0.5;     // [0, 1]
 
     @Override
@@ -91,6 +91,7 @@ public class GeneticSolver implements NQueensSolver {
                 GeneticState p0 = currentStates[randSelect(inverseLoss, false)];
                 GeneticState p1 = currentStates[randSelect(inverseLoss, false)];
                 nextStates[i] = new GeneticState(crossOver(p0, p1));
+                mutate(nextStates[i]);
                 if (nextStates[i].getLoss() == 0)
                     return nextStates[i];
             }
@@ -111,10 +112,10 @@ public class GeneticSolver implements NQueensSolver {
     private GeneticState crossOver(GeneticState p0, GeneticState p1) {
         GeneticState child = new GeneticState(p0.size);
         Random gen = new Random();
-        int idx = gen.nextInt(p0.size);
-        for (int i = 0; i < idx; i++)
+        int idx = gen.nextInt(p0.size - 1);
+        for (int i = 0; i <= idx; i++)
             child.set(i, p0.get(i));
-        for (int i = idx; i < p1.size; i++)
+        for (int i = idx + 1; i < p1.size; i++)
             child.set(i, p1.get(i));
         return child;
     }
