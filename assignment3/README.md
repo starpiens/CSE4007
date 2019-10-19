@@ -102,4 +102,4 @@ Mutation도 과하면 오히려 성능이 감소했다.
 
 매우 빠른 속도로 정답을 찾음을 확인할 수 있었다. 
 
-<img src="../rsrc/run.png">
+<img src="../assignment3/rsrc/run.png">
