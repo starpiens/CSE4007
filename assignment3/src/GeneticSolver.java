@@ -56,9 +56,9 @@ public class GeneticSolver implements NQueensSolver {
 
     // Hyperparameters
     private int maxGenerations = (int)1e9;
-    private int population = 500;           // [1,
+    private int population = 10;           // [1,
     private int mutationStrength = 1;       // [1,
-    private double crossoverRate = .1;
+    private double crossoverRate = 0;
     // private double selectionRate = 0.5;     // [0, 1]
 
     @Override
@@ -121,16 +121,17 @@ public class GeneticSolver implements NQueensSolver {
     }
 
     private void mutate(GeneticState state) {
-        for (int i = 0; i < mutationStrength; i++) {
-            // Randomly select gene using softmax function.
-            int[] elementLoss = state.getElementLoss();
-            double[] expLoss = new double[elementLoss.length];
-            for (int j = 0; j < elementLoss.length; j++)
-                expLoss[j] = Math.exp(elementLoss[j]);
-            int idx = randSelect(expLoss, true);
-
-            // Mutate.
-            Random gen = new Random();
+        // Randomly select gene using softmax function.
+        int[] elementLoss = state.getElementLoss();
+        double[] expLoss = new double[elementLoss.length];
+        for (int j = 0; j < elementLoss.length; j++)
+            expLoss[j] = Math.exp(elementLoss[j]);
+        // Mutate.
+        Random gen = new Random();
+        int idx = randSelect(expLoss, true);
+        state.set(idx, gen.nextInt(state.size));
+        for (int i = 1; i < mutationStrength; i++) {
+            idx = randSelect(expLoss, false);
             state.set(idx, gen.nextInt(state.size));
         }
     }
