@@ -1,6 +1,7 @@
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
+import java.util.Random;
 
 public class GeneticSolver implements NQueensSolver {
 
@@ -9,11 +10,8 @@ public class GeneticSolver implements NQueensSolver {
      */
     private class GeneticState extends NQueensState {
 
-        public int[] partialLoss;
-
         public GeneticState(int size) {
             super(size);
-            partialLoss = new int[size];
         }
 
         /**
@@ -22,7 +20,7 @@ public class GeneticSolver implements NQueensSolver {
          * which is counting the number of violations of N-queens rule.
          * @return Loss of `state`.
          */
-        int loss() {
+        int getLoss() {
             int loss = 0;
             // Check all pairs of elements.
             for (int i = 0; i < state.length - 1; i++) {
@@ -36,8 +34,8 @@ public class GeneticSolver implements NQueensSolver {
         }
 
         // Who mostly caused loss?
-        int maxLossIdx() {
-            Arrays.fill(partialLoss, 0);
+        int[] getPartialLoss() {
+            int[] partialLoss = new int[state.length];
             int maxIdx = 0;
             // Check all pairs of elements.
             for (int i = 0; i < state.length - 1; i++) {
@@ -49,7 +47,7 @@ public class GeneticSolver implements NQueensSolver {
                     }
                 }
             }
-            return maxIdx;
+            return partialLoss;
         }
     }
 
@@ -103,12 +101,21 @@ public class GeneticSolver implements NQueensSolver {
     }
 
     private void mutate(GeneticState state) {
-        Math.random();
+        // Randomly select gene using softmax function.
+        int[] partialLoss = state.getPartialLoss();
+        double[] partialLossDouble = new double[partialLoss.length];
+        for (int i = 0; i < partialLoss.length; i++)
+            partialLossDouble[i] = (double)partialLoss[i];
+        int idx = softmaxRand(partialLossDouble);
+
+        // Mutate.
+        Random gen = new Random();
+        state.state[idx] = gen.nextInt(state.state.length);
     }
 
-    private int softmaxRand(@NotNull double p[]) {
+    private int softmaxRand(@NotNull double[] p) {
         int N = p.length;
-        double soften[] = new double[N];
+        double[] soften = new double[N];
         double sum = 0;
         // Calculate Softmax of p.
         for (int i = 0; i < N; i++)
