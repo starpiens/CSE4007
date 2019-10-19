@@ -1,7 +1,6 @@
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import java.util.Arrays;
-import java.util.Comparator;
+
 import java.util.Random;
 
 public class GeneticSolver implements NQueensSolver {
@@ -59,6 +58,7 @@ public class GeneticSolver implements NQueensSolver {
     private int maxGenerations = (int)1e9;
     private int population = 500;           // [1,
     private int mutationStrength = 1;       // [1,
+    private double crossoverRate = 0.3;
     // private double selectionRate = 0.5;     // [0, 1]
 
     @Override
@@ -76,33 +76,47 @@ public class GeneticSolver implements NQueensSolver {
             if (nextStates[i].getLoss() == 0)
                 return nextStates[i];
         }
+
         for (int gen = 0; gen < maxGenerations; gen++) {
             currentStates = nextStates;
             nextStates = new GeneticState[population];
-            // Select states.
             double[] inverseLoss = new double[population];
             for (int i = 0; i < population; i++)
                 inverseLoss[i] = (double)1 / currentStates[i].getLoss();
-            int idx = randSelect(inverseLoss, true);
-            for (int i = 0; i < population; i++) {
+            randSelect(inverseLoss, true);
+
+            // Make children using crossover.
+            int numCrossover = (int)(population * crossoverRate);
+            for (int i = 0; i < numCrossover; i++) {
+                GeneticState p0 = currentStates[randSelect(inverseLoss, false)];
+                GeneticState p1 = currentStates[randSelect(inverseLoss, false)];
+                nextStates[i] = new GeneticState(crossOver(p0, p1));
+                if (nextStates[i].getLoss() == 0)
+                    return nextStates[i];
+            }
+
+            // Make children using mutation.
+            for (int i = numCrossover; i < population; i++) {
+                int idx = randSelect(inverseLoss, false);
                 nextStates[i] = new GeneticState(currentStates[idx]);
                 mutate(nextStates[i]);
                 if (nextStates[i].getLoss() == 0)
                     return nextStates[i];
-                idx = randSelect(inverseLoss, false);
             }
-            /*
-            // Sort states.
-            Arrays.sort(currentStates, new Comparator<GeneticState>() {
-                @Override
-                public int compare(GeneticState o1, GeneticState o2) {
-                    return o1.getLoss() - o2.getLoss();
-                }
-            });
-            */
         }
 
         return null;
+    }
+
+    private GeneticState crossOver(GeneticState p0, GeneticState p1) {
+        GeneticState child = new GeneticState(p0.size);
+        Random gen = new Random();
+        int idx = gen.nextInt(p0.size);
+        for (int i = 0; i < idx; i++)
+            child.set(i, p0.get(i));
+        for (int i = idx; i < p1.size; i++)
+            child.set(i, p1.get(i));
+        return child;
     }
 
     private void mutate(GeneticState state) {

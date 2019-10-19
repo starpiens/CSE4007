@@ -54,6 +54,7 @@ public class Main {
                 runSolver(outfile, new GeneticSolver(), N);
                 outfile.close();
             } catch(IOException e) {
+                e.printStackTrace();
                 System.exit(1);
             }
         } else if (args.length == 3) {
