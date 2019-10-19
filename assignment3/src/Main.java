@@ -26,6 +26,22 @@ public class Main {
         outfile.write("Elapsed time: " + ((double)(end_time - start_time) / 1e3) + "s\n\n");
     }
 
+    private static void testSolver(NQueensSolver solver, int N, int trials) throws IOException {
+        int numFailure = 0;
+        long timeSum = 0;
+        for (int i = 0; i < trials; i++) {
+            long start = System.currentTimeMillis();
+            if (solver.solve(N) == null) {
+                System.out.println("Trial #" + i + " failed to find answer\n");
+                numFailure++;
+            }
+            long end = System.currentTimeMillis();
+            timeSum += (end - start);
+        }
+        System.out.println("Number of failures: " + numFailure);
+        System.out.println("Average time: " + ((double)timeSum / 1e3 / trials) + "s");
+    }
+
     public static void main(String[] args) {
         // Parse command line arguments
         if (args.length < 2) {
@@ -34,7 +50,11 @@ public class Main {
         int N = Integer.parseInt(args[0]);
         try {
             FileWriter outfile = new FileWriter(args[1] + "/result" + args[0] + ".txt");
-            runSolver(outfile, new GeneticSolver(), N);
+            if (args.length == 2) {
+                runSolver(outfile, new GeneticSolver(), N);
+            } else if (args.length == 3) {
+                testSolver(new GeneticSolver(), N, Integer.parseInt(args[2]));
+            }
             outfile.close();
         } catch(IOException e) {
             System.exit(1);
