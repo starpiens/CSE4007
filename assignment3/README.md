@@ -14,7 +14,7 @@ MacOS 10.15 Catalina
 ## Compile and Run
 ```bash
 ~/assignment3$ make
-~/assignment3$ java -cp out Assignment3 11 .
+~/assignment3$ java -cp out Main 11 .
 ~/assignment3$ cat result11.txt
 ```
 
@@ -101,3 +101,5 @@ Mutation도 과하면 오히려 성능이 감소했다.
 | Average time(s) |0.00122 |0.00536 |0.01474 |0.05001 |0.20001 |
 
 매우 빠른 속도로 정답을 찾음을 확인할 수 있었다. 
+
+<img src="../rsrc/run.png">
