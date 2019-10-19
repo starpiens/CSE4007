@@ -26,7 +26,7 @@ public class Main {
         outfile.write("Elapsed time: " + ((double)(end_time - start_time) / 1e3) + "s\n\n");
     }
 
-    private static void testSolver(NQueensSolver solver, int N, int trials) throws IOException {
+    private static void testSolver(NQueensSolver solver, int N, int trials) {
         int numFailure = 0;
         long timeSum = 0;
         for (int i = 0; i < trials; i++) {
@@ -48,16 +48,16 @@ public class Main {
             System.exit(1);
         }
         int N = Integer.parseInt(args[0]);
-        try {
-            FileWriter outfile = new FileWriter(args[1] + "/result" + args[0] + ".txt");
-            if (args.length == 2) {
+        if (args.length == 2) {
+            try {
+                FileWriter outfile = new FileWriter(args[1] + "/result" + args[0] + ".txt");
                 runSolver(outfile, new GeneticSolver(), N);
-            } else if (args.length == 3) {
-                testSolver(new GeneticSolver(), N, Integer.parseInt(args[2]));
+                outfile.close();
+            } catch(IOException e) {
+                System.exit(1);
             }
-            outfile.close();
-        } catch(IOException e) {
-            System.exit(1);
+        } else if (args.length == 3) {
+            testSolver(new GeneticSolver(), N, Integer.parseInt(args[2]));
         }
     }
 }

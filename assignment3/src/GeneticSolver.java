@@ -1,6 +1,7 @@
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Random;
 
 public class GeneticSolver implements NQueensSolver {
@@ -10,50 +11,55 @@ public class GeneticSolver implements NQueensSolver {
      */
     private class GeneticState extends NQueensState {
 
+        private int[] elementLoss = null;
+
+        // Default constructor.
         public GeneticState(int size) {
             super(size);
         }
 
-        /**
-         * Get loss of the state.
-         * This version of implementation uses naive implementation,
-         * which is counting the number of violations of N-queens rule.
-         * @return Loss of `state`.
-         */
-        int getLoss() {
-            int loss = 0;
-            // Check all pairs of elements.
-            for (int i = 0; i < state.length - 1; i++) {
-                for (int j = i + 1; j < state.length; j++) {
-                    int delta = Math.abs(state[j] - state[i]);
-                    if (delta == 0 || delta == j - i)
-                        loss++;
-                }
-            }
+        // Copy constructor.
+        public GeneticState(@NotNull GeneticState other) {
+            super(other);
+        }
+
+        @Override
+        public int getLoss() {
+            if (loss != -1)
+                return loss;
+            computeElementLoss();
             return loss;
         }
 
-        // Who mostly caused loss?
-        int[] getPartialLoss() {
-            int[] partialLoss = new int[state.length];
-            int maxIdx = 0;
+        public int[] getElementLoss() {
+            if (elementLoss != null)
+                return elementLoss.clone();
+            return computeElementLoss();
+        }
+
+        private int[] computeElementLoss() {
+            loss = 0;
+            elementLoss = new int[size];
             // Check all pairs of elements.
             for (int i = 0; i < state.length - 1; i++) {
                 for (int j = i + 1; j < state.length; j++) {
                     int delta = Math.abs(state[j] - state[i]);
                     if (delta == 0 || delta == j - i) {
-                        if (++partialLoss[i] > partialLoss[maxIdx]) maxIdx = i;
-                        if (++partialLoss[j] > partialLoss[maxIdx]) maxIdx = j;
+                        ++elementLoss[i];
+                        ++elementLoss[j];
+                        loss++;
                     }
                 }
             }
-            return partialLoss;
+            return elementLoss.clone();
         }
     }
 
+    // Hyperparameters
     private int maxGenerations = (int)1e9;
-    private int population = 100;
-    private int mutationStrength = 1;
+    private int population = 500;           // [1,
+    private int mutationStrength = 1;       // [1,
+    // private double selectionRate = 0.5;     // [0, 1]
 
     @Override
     public String name() {
@@ -63,72 +69,71 @@ public class GeneticSolver implements NQueensSolver {
     @Nullable
     @Override
     public NQueensState solve(int N) {
-        GeneticState[] states = new GeneticState[population];
+        GeneticState[] currentStates, nextStates;
+        nextStates = new GeneticState[population];
         for (int i = 0; i < population; i++) {
-            states[i] = new GeneticState(N);
-            states[i].rand();
+            nextStates[i] = new GeneticState(N);
+            if (nextStates[i].getLoss() == 0)
+                return nextStates[i];
         }
-        for (int gen = 1; gen < maxGenerations; gen++) {
-            for (GeneticState i : states) {
-                mutate(i);
-                if (i.valid())
-                    return i;
+        for (int gen = 0; gen < maxGenerations; gen++) {
+            currentStates = nextStates;
+            nextStates = new GeneticState[population];
+            // Select states.
+            double[] inverseLoss = new double[population];
+            for (int i = 0; i < population; i++)
+                inverseLoss[i] = (double)1 / currentStates[i].getLoss();
+            int idx = randSelect(inverseLoss, true);
+            for (int i = 0; i < population; i++) {
+                nextStates[i] = new GeneticState(currentStates[idx]);
+                mutate(nextStates[i]);
+                if (nextStates[i].getLoss() == 0)
+                    return nextStates[i];
+                idx = randSelect(inverseLoss, false);
             }
+            /*
+            // Sort states.
+            Arrays.sort(currentStates, new Comparator<GeneticState>() {
+                @Override
+                public int compare(GeneticState o1, GeneticState o2) {
+                    return o1.getLoss() - o2.getLoss();
+                }
+            });
+            */
         }
 
         return null;
     }
 
-    /**
-     * Get loss of the state.
-     * This version of implementation uses naive implementation,
-     * which is counting the number of violations of N-queens rule.
-     * @param state The board state.
-     * @return Loss of `state`.
-     */
-    private int getLoss(@NotNull GeneticState state) {
-        int loss = 0;
-        // Check all pairs of elements.
-        for (int i = 0; i < state.state.length - 1; i++) {
-            for (int j = i + 1; j < state.state.length; j++) {
-                int delta = Math.abs(state.state[j] - state.state[i]);
-                // Check horizontal and diagonal.
-                if (delta == 0 || delta == j - i)
-                    loss++;
-            }
-        }
-        return loss;
-    }
-
     private void mutate(GeneticState state) {
-        // Randomly select gene using softmax function.
-        int[] partialLoss = state.getPartialLoss();
-        double[] partialLossDouble = new double[partialLoss.length];
-        for (int i = 0; i < partialLoss.length; i++)
-            partialLossDouble[i] = (double)partialLoss[i];
-        int idx = softmaxRand(partialLossDouble);
+        for (int i = 0; i < mutationStrength; i++) {
+            // Randomly select gene using softmax function.
+            int[] elementLoss = state.getElementLoss();
+            double[] expLoss = new double[elementLoss.length];
+            for (int j = 0; j < elementLoss.length; j++)
+                expLoss[j] = Math.exp(elementLoss[j]);
+            int idx = randSelect(expLoss, true);
 
-        // Mutate.
-        Random gen = new Random();
-        state.state[idx] = gen.nextInt(state.state.length);
+            // Mutate.
+            Random gen = new Random();
+            state.set(idx, gen.nextInt(state.size));
+        }
     }
 
-    private int softmaxRand(@NotNull double[] p) {
-        int N = p.length;
-        double[] soften = new double[N];
-        double sum = 0;
-        // Calculate Softmax of p.
-        for (int i = 0; i < N; i++)
-            sum += (soften[i] = Math.exp(p[i]));
-        for (int i = 0; i < N; i++)
-            soften[i] /= sum;
-        // Pick value.
-        double rand = Math.random();
-        for (int i = 0; i < N; i++) {
-            if (rand < soften[i])
-                return i;
-            rand -= soften[i];
+    private int randSelect(@NotNull double[] p, boolean normalize) {
+        if (normalize) {
+            double sum = 0;
+            for (double i : p)
+                sum += i;
+            for (int i = 0; i < p.length; i++)
+                p[i] /= sum;
         }
-        return N - 1;
+        double rand = Math.random();
+        for (int i = 0; i < p.length; i++) {
+            if (rand < p[i])
+                return i;
+            rand -= p[i];
+        }
+        return p.length - 1;
     }
 }
