@@ -1,5 +1,5 @@
 # CSE4007
-Artificial Intelligence, Fall 2019, Hanyang University.
+**Artificial Intelligence**, Fall 2019, Hanyang University.
 
 ## Solving N-Queens Problem
 - [Assignment1](assignment1): DFS, BFS, DFID
