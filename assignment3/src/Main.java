@@ -5,7 +5,7 @@ public class Main {
 
     private static void runSolver(FileWriter outfile, NQueensSolver solver, int N) throws IOException {
         // Write the name of the algorithm.
-        outfile.write(solver.name() + "\n");
+        outfile.write("> " + solver.name() + "\n");
 
         // Run solver and measure elapsed time.
         long start_time = System.currentTimeMillis();
