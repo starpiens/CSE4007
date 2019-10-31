@@ -5,3 +5,4 @@
 - [Assignment1](assignment1): DFS, BFS, DFID
 - [Assignment2](assignment2): Local Search: Hill Climbing
 - [Assignment3](assignment3): Genetic Algorithm
+- [Assignment4](assignment4): Propositional logic: SAT Solver
