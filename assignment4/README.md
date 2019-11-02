@@ -50,4 +50,4 @@ naive한 버전에서는 각 변수가 체스판에서 하나의 격자를 나�
 훨씬 빠른 속도를 보이는 것이다. 
 
 ## Screenshot
-![](rsrc/Optimized.png)
+![](https://github.com/starlettkim/CSE4007/blob/master/assignment4/rsrc/Optimized.png)
