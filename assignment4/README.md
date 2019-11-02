@@ -25,7 +25,7 @@ X = [Int("col_%s" % col) for col in range(N)]
 ```python
 domain = [And(X[col] > 0, X[col] <= N) for col in range(N)]
 ```
-**Position.** 모든 (i,j)변수 쌍에 대해서, 두 퀸이 같은 행에 놓여 있거나 같은 대각선에 놓일 수 없다. 
+**Position.** 모든 변수 쌍(col_i,col_j)에 대해서, 두 퀸이 같은 행에 놓여 있거나 같은 대각선에 놓일 수 없다. 
 ```python
 posConst = [
     And(X[i] != X[j], X[j]-X[i] != j-i, X[j]-X[i] != i-j)
